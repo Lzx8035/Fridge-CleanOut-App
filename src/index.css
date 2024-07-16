@@ -1,13 +1,153 @@
-body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+@font-face {
+  font-family: "Header";
+  src: url("./asset/Darling\ Coffee.otf") format("opentype"),
+    url("./asset/Darling\ Coffee.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+@font-face {
+  font-family: "Second";
+  src: url("./asset/Vanilla\ Cake\ Free.otf") format("opentype"),
+    url("./asset/Vanilla\ Cake\ Free.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Third";
+  src: url("./asset/Dacherry.otf") format("opentype"),
+    url("./asset/Dacherry.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 62.5%;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  background: linear-gradient(to bottom right, #ead6ee, #a0f1ea);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
+}
+
+.App {
+  justify-content: center;
+  align-items: center;
+  width: 100rem;
+  height: 60rem;
+  border-radius: 1rem;
+  background-color: #fff;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+  display: grid;
+  grid-template-columns: 0.74fr 1.5fr 1fr;
+}
+
+.header {
+  grid-column: 1 / -1;
+  background-color: #fff;
+  padding: 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 2.4rem;
+  border-radius: 1rem 1rem 0 0;
+}
+
+.function-btn span {
+  margin-left: 1rem;
+}
+
+.left-box {
+  padding: 0 2rem 2rem;
+  background-color: #fff;
+  border-radius: 0 0 0 1rem;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.right-box {
+  padding: 0 2rem 2rem;
+  background-color: #fff;
+  border-radius: 0 0 1rem 0;
+}
+
+.middle-box {
+  font-size: 10rem;
+  background-color: #fff;
+  justify-content: center;
+  align-items: center;
+  margin-left: 10rem;
+}
+
+.recipes-result-box {
+  padding: 1rem;
+  grid-column: 2 / -1;
+  background-color: #ccffcc;
+  overflow-y: auto;
+}
+
+.recipe-box {
+  background-color: white;
+  padding: 2rem;
+  margin: 2rem;
+  border-radius: 0.5rem;
+}
+
+.item {
+  display: flex;
+  justify-content: space-between;
+  margin: 1rem;
+  background-color: #ccffcc;
+  border-radius: rem;
+  padding: 2rem 2rem;
+}
+
+h3 {
+  font-size: 2.4rem;
+}
+
+.blur-background {
+  backdrop-filter: blur(10px);
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.add-indredient-form {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #fff;
+  padding: 2rem;
+  border-radius: 1rem;
+  box-shadow: 0 1rem 2rem rgba(0, 0, 0, 0.2);
+  width: 40rem;
+  height: 25rem;
+  z-index: 1000;
+}
+
+.blur-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #ffffff19;
+  backdrop-filter: blur(0.5rem);
+  -webkit-backdrop-filter: blur(1rem);
+  z-index: 999;
 }
