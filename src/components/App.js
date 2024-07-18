@@ -10,17 +10,15 @@ import LeftBox from "./LeftBox";
 import RightBox from "./RightBox";
 import ResultBox from "./ResultBox";
 import LearnMore from "./LearnMore";
+import useLocalStorageStage from "./useLocalStorage";
 
 // const apiKey = "bd8e5f0053c7473ebebedb215a6c2d9a";
 
 // TODO
-// add local storage
-// complete add recipes
-// add LearnMore page design(hard code)
+// fetch recipes for ResultBox(search button) and complete add recipes function
 // update RecipeItem and ResultItem and Pagination
-// complete fetch recipes for ResultBox(search button)
-// complete fetch details for MoreDetail
-// add router for MoreDetail
+// add LearnMore page design(hard code) and complete fetch details for MoreDetail
+// add router for MoreDetail Page
 
 // // ///// Search Recipes by Ingredients
 // async function searchRecipesByIngredients(ingredients) {
@@ -109,8 +107,11 @@ const initialRecipes = [
 ////////////////////////////////////////////////////////////////////////
 function App() {
   const [showResults, setShowResults] = useState(false);
-  const [ingredients, setIngredients] = useState(InitialIngredients);
-  const [recipes, setRecipes] = useState(initialRecipes);
+  const [ingredients, setIngredients] = useLocalStorageStage(
+    InitialIngredients,
+    "ingredients"
+  );
+  const [recipes, setRecipes] = useLocalStorageStage(initialRecipes, "recipes");
   const [learnMore, setLearnMore] = useState(false);
 
   const handleCloseResult = () => {
