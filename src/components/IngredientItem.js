@@ -18,7 +18,7 @@ export default function IngredientItem({ item, onDelete }) {
             aria-label="delete"
             onClick={() => onDelete(item.id)}
           >
-            <DeleteIcon />
+            <DeleteIcon sx={{ color: "#bbb", fontSize: "2rem" }} />
           </IconButton>
         }
       >

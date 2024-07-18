@@ -58,7 +58,7 @@ body {
 .header {
   grid-column: 1 / -1;
   background-color: #fff;
-  padding: 1rem;
+  padding: 1.8rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -113,7 +113,6 @@ body {
   justify-content: space-between;
   margin: 1rem;
   background-color: #ccffcc;
-  border-radius: rem;
   padding: 2rem 2rem;
 }
 

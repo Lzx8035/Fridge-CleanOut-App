@@ -1,22 +1,30 @@
 import React from "react";
 import { useState } from "react";
 
-import List from "@mui/material/List";
 import Stack from "@mui/material/Stack";
 import IconButton from "@mui/material/IconButton";
 import KitchenIcon from "@mui/icons-material/Kitchen";
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
-import { Grid } from "@mui/material";
 
-import ResultItem from "./ResultItem";
-import RecipeItem from "./RecipeItem";
 import LeftBox from "./LeftBox";
+import RightBox from "./RightBox";
+import ResultBox from "./ResultBox";
+import LearnMore from "./LearnMore";
 
 // const apiKey = "bd8e5f0053c7473ebebedb215a6c2d9a";
 
-// ///// Search Recipes by Ingredients
+// TODO
+// add local storage
+// complete add recipes
+// add LearnMore page design(hard code)
+// update RecipeItem and ResultItem and Pagination
+// complete fetch recipes for ResultBox(search button)
+// complete fetch details for MoreDetail
+// add router for MoreDetail
+
+// // ///// Search Recipes by Ingredients
 // async function searchRecipesByIngredients(ingredients) {
-//   const ingredientsParam = ingredients.join(",+");
+//   const ingredientsParam = ingredients.map((item) => item.name).join(",+");
 //   const url = `https://api.spoonacular.com/recipes/findByIngredients?ingredients=${ingredientsParam}&ranking=1&ignorePantry=true&apiKey=${apiKey}`;
 //   try {
 //     const response = await fetch(url);
@@ -29,21 +37,40 @@ import LeftBox from "./LeftBox";
 //     console.error("Error fetching recipes:", error);
 //   }
 // }
+
 const InitialIngredients = [
   { id: 1001, name: "potato", quantity: "100g", emoji: "🥔" },
   { id: 1022, name: "garlic", quantity: "5", emoji: "🧄" },
   { id: 1333, name: "tomato", quantity: "2", emoji: "🍅" },
   { id: 1444, name: "tofu", quantity: "500g", emoji: "" },
   { id: 1555, name: "salmon", quantity: "500g", emoji: "🍣" },
-  // { id: 1666, name: "pork", quantity: "4lb" },
-  // { id: 1777, name: "chicken", quantity: "1kg" },
-  // { id: 1888, name: "beef", quantity: "5lb" },
-  // { id: 1999, name: "carrot", quantity: "500g" },
-  // { id: 2000, name: "onion", quantity: "4" },
-  // { id: 2111, name: "bell pepper", quantity: "10" },
-  // { id: 2222, name: "mushroom", quantity: "20" },
+  //   // { id: 1666, name: "pork", quantity: "4lb" },
+  //   // { id: 1777, name: "chicken", quantity: "1kg" },
+  //   // { id: 1888, name: "beef", quantity: "5lb" },
+  //   // { id: 1999, name: "carrot", quantity: "500g" },
+  //   // { id: 2000, name: "onion", quantity: "4" },
+  //   // { id: 2111, name: "bell pepper", quantity: "10" },
+  //   // { id: 2222, name: "mushroom", quantity: "20" },
 ];
-// // searchRecipesByIngredients(ingredients);
+
+const initialRecipes = [
+  {
+    id: 73420,
+    image: "https://img.spoonacular.com/recipes/73420-312x231.jpg",
+    title: "Apple Or Peach Strudel",
+    missedIngredientCount: 4,
+    usedIngredientCount: 1,
+  },
+  {
+    id: 632660,
+    image: "https://img.spoonacular.com/recipes/632660-312x231.jpg",
+    title: "Apricot Glazed Apple Tart",
+    missedIngredientCount: 3,
+    usedIngredientCount: 1,
+  },
+];
+
+// searchRecipesByIngredients(InitialIngredients);
 
 // ///// Get Recipe Information
 // async function getSimilarRecipes(id) {
@@ -79,30 +106,12 @@ const InitialIngredients = [
 // }
 // // createRecipeCard(id);
 
-// /////// Ingredients by ID Widget
-// // BUG
-// async function getIngredientsbyIDWidget(id) {
-//   const url = `https://api.spoonacular.com/recipes/${id}/ingredientWidget?apiKey=${apiKey}`;
-
-//   try {
-//     const response = await fetch(url);
-//     if (!response.ok) {
-//       throw new Error(`HTTP error! status: ${response.status}`);
-//     }
-//     const data = await response;
-//     console.log(data);
-//   } catch (error) {
-//     console.error("Error fetching recipes:", error);
-//   }
-// }
-
-// getIngredientsbyIDWidget(id);
-
 ////////////////////////////////////////////////////////////////////////
 function App() {
   const [showResults, setShowResults] = useState(false);
   const [ingredients, setIngredients] = useState(InitialIngredients);
-  // const [recipes, setRecipes] = useState([]);
+  const [recipes, setRecipes] = useState(initialRecipes);
+  const [learnMore, setLearnMore] = useState(false);
 
   const handleCloseResult = () => {
     setShowResults(false);
@@ -110,6 +119,21 @@ function App() {
 
   const handleFetchResult = () => {
     setShowResults(true);
+  };
+
+  const handleAddIngredient = (newIngredient) => {
+    setIngredients((prevIngredients) => {
+      const isExisting = prevIngredients.find(
+        (ing) => ing.name === newIngredient.name
+      );
+
+      if (!isExisting) {
+        return [...prevIngredients, newIngredient];
+      } else {
+        alert("Can not add the same ingredient 👉👈");
+        return prevIngredients;
+      }
+    });
   };
 
   const handleCleanAllIngredient = () => {
@@ -122,28 +146,46 @@ function App() {
   };
 
   const handleDeleteOneIngredient = (id) => {
-    setIngredients((prevIngredients) =>
-      prevIngredients.filter((ingredient) => ingredient.id !== id)
-    );
-    console.log("clicked");
+    setTimeout(() => {
+      setIngredients((prevIngredients) =>
+        prevIngredients.filter((ingredient) => ingredient.id !== id)
+      );
+    }, 300);
   };
 
+  const handleDeleteOneRecipe = (id) => {
+    setTimeout(() => {
+      setRecipes((prevRecipes) =>
+        prevRecipes.filter((recipe) => recipe.id !== id)
+      );
+    }, 300);
+  };
+
+  const handleAddRecipe = (newR) => {};
+
   return (
-    <div className="App hidden">
-      <Header onClose={handleCloseResult} showResults={showResults} />
-      <LeftBox
-        onSearch={handleFetchResult}
-        onClean={handleCleanAllIngredient}
-        onDelete={handleDeleteOneIngredient}
-        ingredients={ingredients}
-      />
-      {!showResults ? (
+    <div className="App">
+      {!learnMore ? (
         <>
-          <MiddleBox />
-          <RightBox />
+          <Header onClose={handleCloseResult} showResults={showResults} />
+          <LeftBox
+            onSearch={handleFetchResult}
+            onClean={handleCleanAllIngredient}
+            onDelete={handleDeleteOneIngredient}
+            ingredients={ingredients}
+            onAdd={handleAddIngredient}
+          />
+          {!showResults ? (
+            <>
+              <MiddleBox />
+              <RightBox recipes={recipes} onDelete={handleDeleteOneRecipe} />
+            </>
+          ) : (
+            <ResultBox />
+          )}
         </>
       ) : (
-        <ResultBox />
+        <LearnMore />
       )}
     </div>
   );
@@ -155,7 +197,7 @@ function Header({ onClose, showResults }) {
       <Stack direction="row" spacing={1}>
         <KitchenIcon sx={{ fontSize: 50, color: "#e3c8e8" }} />
         <h1 style={{ fontFamily: "Header", color: "#e3c8e8" }}>
-          Clean my fridge
+          <label>Clean my fridge</label>
         </h1>
       </Stack>
       {showResults && (
@@ -167,124 +209,13 @@ function Header({ onClose, showResults }) {
   );
 }
 
-// const CustomButton = styled(Button)`
-//   font-family: "Second", sans-serif;
-//   background-color: #87bbb7;
-//   font-size: 1.4rem;
-//   &:hover {
-//     background-color: #6eada8 !important;
-//   }
-// `;
-
-// function LeftBox({ ingredients, onSearch, onClean, onDelete }) {
-//   const [isOpen, setIsOpen] = useState(false);
-//   const handleToggleOpen = () => {
-//     setIsOpen((isopen) => !isOpen);
-//   };
-
-//   return (
-//     <div className="left-box">
-//       <div>
-//         <h3 style={{ fontFamily: "Second", color: "#6eada8" }}>
-//           What is in your fridge Today?
-//           <IconButton aria-label="add ingredient">
-//             <AddCircleIcon sx={{ fontSize: 40, color: "#a0f1ea" }} />
-//           </IconButton>
-//         </h3>
-//         <List
-//           sx={{
-//             overflowY: "auto",
-//             flexGrow: 1,
-//             maxHeight: "35rem",
-//             minHeight: "35rem",
-//           }}
-//         >
-//           {ingredients.map((item) => (
-//             <IngredientItem key={item.id} item={item} onDelete={onDelete} />
-//           ))}
-//         </List>
-//       </div>
-
-//       <Stack direction="row" spacing={1}>
-//         <CustomButton variant="contained" onClick={() => onClean()}>
-//           Clean all
-//         </CustomButton>
-//         <CustomButton variant="contained" onClick={() => onSearch()}>
-//           Search
-//         </CustomButton>
-//       </Stack>
-
-//       {isOpen && (
-//         <>
-//           <div class="blur-overlay"></div>
-//           <div className="add-indredient-form"></div>
-//         </>
-//       )}
-//     </div>
-//   );
-// }
-
 function MiddleBox() {
   return (
     <div
       className="middle-box"
       style={{ fontFamily: "Third", color: "#f3e8f5" }}
     >
-      Get your recipes!
-    </div>
-  );
-}
-
-function RightBox() {
-  return (
-    <div className="right-box">
-      <h3 style={{ fontFamily: "Second", color: "#6eada8" }}>
-        My favourite recipe
-      </h3>
-
-      <List
-        sx={{
-          overflowY: "auto",
-          flexGrow: 1,
-          maxHeight: "45rem",
-        }}
-      >
-        <RecipeItem />
-        <RecipeItem />
-        <RecipeItem />
-        <RecipeItem />
-        <RecipeItem />
-        <RecipeItem />
-        <RecipeItem />
-        <RecipeItem />
-        <RecipeItem />
-        <RecipeItem />
-        <RecipeItem />
-        <RecipeItem />
-      </List>
-    </div>
-  );
-}
-
-function ResultBox() {
-  return (
-    <div className="recipes-result-box">
-      <Grid
-        container
-        spacing={1}
-        sx={{
-          overflowY: "auto",
-          flexGrow: 1,
-          maxHeight: "50rem",
-          minHeight: "50rem",
-        }}
-      >
-        {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((item) => (
-          <Grid item xs={12} sm={6} md={4} key={item}>
-            <ResultItem />
-          </Grid>
-        ))}
-      </Grid>
+      <label>Get your recipes!</label>
     </div>
   );
 }

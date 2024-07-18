@@ -1,13 +1,11 @@
-import { ListItem } from "@mui/material";
+import ListItem from "@mui/material/ListItem";
 import ListItemText from "@mui/material/ListItemText";
 import ListItemAvatar from "@mui/material/ListItemAvatar";
 import Divider from "@mui/material/Divider";
 import DeleteIcon from "@mui/icons-material/Delete";
-import { IconButton } from "@mui/material";
+import IconButton from "@mui/material/IconButton";
 
-import appleImg from "../asset/apple-pie.png";
-
-export default function RecipeItem() {
+export default function RecipeItem({ item, onDelete }) {
   return (
     <>
       <Divider />
@@ -18,17 +16,17 @@ export default function RecipeItem() {
         }}
       >
         <ListItemAvatar>
-          {/* <img alt="apple pie" src="https://i.pravatar.cc/48" /> */}
-          <img alt="apple pie" src={appleImg} style={{ height: "6rem" }} />
+          <img alt={item.title} src={item.image} style={{ height: "6rem" }} />
         </ListItemAvatar>
         <ListItemText
-          primary="Apple-pie"
-          secondary="30 mins"
+          primary={item.title}
+          secondary={`Missed ingredients count: ${item.missedIngredientCount},
+    Used ingredients count: ${item.usedIngredientCount},`}
           primaryTypographyProps={{ fontWeight: "bold" }}
           secondaryTypographyProps={{ color: "text.secondary" }}
         />
-        <IconButton>
-          <DeleteIcon />
+        <IconButton onClick={() => onDelete(item.id)}>
+          <DeleteIcon sx={{ color: "#bbb", fontSize: "2rem" }} />
         </IconButton>
       </ListItem>
     </>
