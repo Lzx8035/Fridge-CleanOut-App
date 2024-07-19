@@ -8,6 +8,7 @@ import HighlightOffIcon from "@mui/icons-material/HighlightOff";
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
 import { v4 as uuidv4 } from "uuid";
+import LoadingButton from "@mui/lab/LoadingButton";
 
 import IngredientItem from "./IngredientItem";
 import CustomButton from "./CustomButton";
@@ -18,6 +19,7 @@ export default function LeftBox({
   onClean,
   onDelete,
   onAdd,
+  isLoading,
 }) {
   const [isOpen, setIsOpen] = useState(false);
   const handleToggleOpen = () => {
@@ -50,13 +52,30 @@ export default function LeftBox({
         </List>
       </div>
 
-      <Stack direction="row" spacing={1}>
+      <Stack
+        direction="row"
+        spacing={1}
+        sx={{ maxHeight: "5rem", minHeight: "5rem" }}
+      >
         <CustomButton variant="contained" onClick={() => onClean()}>
           Clean all
         </CustomButton>
-        <CustomButton variant="contained" onClick={() => onSearch()}>
+        <LoadingButton
+          sx={{
+            fontFamily: '"Second", sans-serif',
+            backgroundColor: "#87bbb7",
+            fontSize: "1.4rem",
+            "&:hover": {
+              backgroundColor: "#6eada8",
+            },
+          }}
+          variant="contained"
+          onClick={() => onSearch()}
+          loading={isLoading}
+          loadingIndicator="Loading…"
+        >
           Search
-        </CustomButton>
+        </LoadingButton>
       </Stack>
 
       {isOpen && <AddIngredientForm onClose={handleToggleOpen} onAdd={onAdd} />}

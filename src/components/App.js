@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useState } from "react";
 
 import Stack from "@mui/material/Stack";
@@ -13,10 +13,8 @@ import LearnMore from "./LearnMore";
 import useLocalStorageStage from "./useLocalStorage";
 
 // TODO
-// fetch recipes for ResultBox(search button) and complete add recipes function
-// update RecipeItem and ResultItem and Pagination
-// add LearnMore page design(hard code) and complete fetch details for MoreDetail
-// add router for MoreDetail Page
+// add LearnMore page and complete fetch details for LearnMore
+// add router for LearnMore Page
 
 const InitialIngredients = [
   { id: 1001, name: "potato", quantity: "100g", emoji: "🥔" },
@@ -60,6 +58,8 @@ function App() {
   );
   const [recipes, setRecipes] = useLocalStorageStage([], "recipes");
   const recipesIds = recipes.map((item) => item.id);
+
+  const [page, setPage] = useState(1);
   const [results, setResults] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
@@ -110,15 +110,16 @@ function App() {
     }, 300);
   };
 
-  const fetchResults = async () => {
+  const fetchResults = async (page = 1) => {
     if (ingredients.length === 0) {
       setError("");
       setResults([]);
       return;
     }
 
+    const offset = (page - 1) * 12;
     const ingredientsParam = ingredients.map((item) => item.name).join(",+");
-    const url = `https://api.spoonacular.com/recipes/findByIngredients?ingredients=${ingredientsParam}&ranking=1&ignorePantry=true&apiKey=${apiKey}`;
+    const url = `https://api.spoonacular.com/recipes/findByIngredients?ingredients=${ingredientsParam}&ranking=1&ignorePantry=true&apiKey=${apiKey}&number=12&offset=${offset}`;
 
     try {
       setIsLoading(true);
@@ -151,6 +152,10 @@ function App() {
     });
   };
 
+  useEffect(() => {
+    fetchResults(page);
+  }, [page]);
+
   // const handleOpenLearnMore = (id) => {
   //   setLearnMore(id);
   // };
@@ -170,6 +175,7 @@ function App() {
             onDelete={handleDeleteOneIngredient}
             ingredients={ingredients}
             onAdd={handleAddIngredient}
+            isLoading={isLoading}
           />
           {!showResults ? (
             <>
@@ -187,6 +193,8 @@ function App() {
               isLoading={isLoading}
               error={error}
               onAdd={handleAddRecipe}
+              page={page}
+              onSetPage={setPage}
               // onOpen
             />
           )}

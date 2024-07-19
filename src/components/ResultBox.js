@@ -1,5 +1,7 @@
-import { Grid } from "@mui/material";
+import { Grid, Stack } from "@mui/material";
 import ResultItem from "./ResultItem";
+import CustomButton from "./CustomButton";
+import { useState } from "react";
 
 // TODO: change the grid style
 
@@ -9,6 +11,8 @@ export default function ResultBox({
   isLoading,
   error,
   onAdd,
+  page,
+  onSetPage,
 }) {
   return (
     <div className="recipes-result-box">
@@ -37,6 +41,7 @@ export default function ResultBox({
               <ResultItem item={item} onAdd={onAdd} recipesIds={recipesIds} />
             </Grid>
           ))}
+          <Pagination page={page} onSetPage={onSetPage} />
         </Grid>
       )}
     </div>
@@ -55,6 +60,41 @@ const ErrorComponent = ({ message }) => {
   return (
     <div className="error">
       <p>Error: {message}</p>
+    </div>
+  );
+};
+
+// TODO
+const Pagination = ({ page, onSetPage, error }) => {
+  const handlePreviousPage = () => {
+    page > 1 && onSetPage((page) => page - 1);
+  };
+  const handleNextPage = () => {
+    onSetPage((page) => page + 1);
+    if (error) onSetPage((page) => page - 1);
+  };
+
+  return (
+    <div
+      style={{
+        width: "100%",
+        display: "grid",
+        gridTemplateColumns: "1fr 1fr 1fr",
+        padding: "10px",
+      }}
+    >
+      <CustomButton onClick={handlePreviousPage}>Previous Page</CustomButton>
+      <h1
+        style={{
+          fontFamily: "Third",
+          fontSize: "3rem",
+          color: "#6eada8",
+          paddingLeft: "8rem",
+        }}
+      >
+        Page {page}
+      </h1>
+      <CustomButton onClick={handleNextPage}>Next Page</CustomButton>
     </div>
   );
 };

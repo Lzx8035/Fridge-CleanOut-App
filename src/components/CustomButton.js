@@ -5,6 +5,7 @@ const CustomButton = styled(Button)`
   font-family: "Second", sans-serif;
   background-color: #87bbb7;
   font-size: 1.4rem;
+  color: #fff;
   &:hover {
     background-color: #6eada8 !important;
   }

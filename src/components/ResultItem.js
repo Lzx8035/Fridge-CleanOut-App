@@ -12,7 +12,7 @@ export default function ResultItem({ item, onAdd, recipesIds }) {
   const isLiked = recipesIds.find((recipeId) => item.id === recipeId);
 
   return (
-    <Card sx={{ maxWidth: 345 }}>
+    <Card sx={{ Width: 345, height: "36rem" }}>
       <CardMedia
         component="img"
         height="180"
