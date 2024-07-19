@@ -12,29 +12,11 @@ import ResultBox from "./ResultBox";
 import LearnMore from "./LearnMore";
 import useLocalStorageStage from "./useLocalStorage";
 
-// const apiKey = "bd8e5f0053c7473ebebedb215a6c2d9a";
-
 // TODO
 // fetch recipes for ResultBox(search button) and complete add recipes function
 // update RecipeItem and ResultItem and Pagination
 // add LearnMore page design(hard code) and complete fetch details for MoreDetail
 // add router for MoreDetail Page
-
-// // ///// Search Recipes by Ingredients
-// async function searchRecipesByIngredients(ingredients) {
-//   const ingredientsParam = ingredients.map((item) => item.name).join(",+");
-//   const url = `https://api.spoonacular.com/recipes/findByIngredients?ingredients=${ingredientsParam}&ranking=1&ignorePantry=true&apiKey=${apiKey}`;
-//   try {
-//     const response = await fetch(url);
-//     if (!response.ok) {
-//       throw new Error(`HTTP error! status: ${response.status}`);
-//     }
-//     const data = await response.json();
-//     console.log(data);
-//   } catch (error) {
-//     console.error("Error fetching recipes:", error);
-//   }
-// }
 
 const InitialIngredients = [
   { id: 1001, name: "potato", quantity: "100g", emoji: "🥔" },
@@ -51,43 +33,7 @@ const InitialIngredients = [
   //   // { id: 2222, name: "mushroom", quantity: "20" },
 ];
 
-const initialRecipes = [
-  {
-    id: 73420,
-    image: "https://img.spoonacular.com/recipes/73420-312x231.jpg",
-    title: "Apple Or Peach Strudel",
-    missedIngredientCount: 4,
-    usedIngredientCount: 1,
-  },
-  {
-    id: 632660,
-    image: "https://img.spoonacular.com/recipes/632660-312x231.jpg",
-    title: "Apricot Glazed Apple Tart",
-    missedIngredientCount: 3,
-    usedIngredientCount: 1,
-  },
-];
-
-// searchRecipesByIngredients(InitialIngredients);
-
-// ///// Get Recipe Information
-// async function getSimilarRecipes(id) {
-//   const url = `https://api.spoonacular.com/recipes/${id}/information?apiKey=${apiKey}`;
-//   try {
-//     const response = await fetch(url);
-//     if (!response.ok) {
-//       throw new Error(`HTTP error! status: ${response.status}`);
-//     }
-//     const data = await response.json();
-//     console.log(data);
-//   } catch (error) {
-//     console.error("Error fetching recipes:", error);
-//   }
-// }
-// const id = 662276;
-// // getSimilarRecipes(id);
-
-// /////// Create Recipe Card
+///////// Create LearnMore Page
 // async function createRecipeCard(id) {
 //   const url = `https://api.spoonacular.com/recipes/${id}/card?apiKey=${apiKey}`;
 
@@ -107,19 +53,21 @@ const initialRecipes = [
 ////////////////////////////////////////////////////////////////////////
 function App() {
   const [showResults, setShowResults] = useState(false);
+  const [learnMore, setLearnMore] = useState(null); // recipe id
   const [ingredients, setIngredients] = useLocalStorageStage(
     InitialIngredients,
     "ingredients"
   );
-  const [recipes, setRecipes] = useLocalStorageStage(initialRecipes, "recipes");
-  const [learnMore, setLearnMore] = useState(false);
+  const [recipes, setRecipes] = useLocalStorageStage([], "recipes");
+  const recipesIds = recipes.map((item) => item.id);
+  const [results, setResults] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
+
+  const apiKey = "bd8e5f0053c7473ebebedb215a6c2d9a";
 
   const handleCloseResult = () => {
     setShowResults(false);
-  };
-
-  const handleFetchResult = () => {
-    setShowResults(true);
   };
 
   const handleAddIngredient = (newIngredient) => {
@@ -162,7 +110,54 @@ function App() {
     }, 300);
   };
 
-  const handleAddRecipe = (newR) => {};
+  const fetchResults = async () => {
+    if (ingredients.length === 0) {
+      setError("");
+      setResults([]);
+      return;
+    }
+
+    const ingredientsParam = ingredients.map((item) => item.name).join(",+");
+    const url = `https://api.spoonacular.com/recipes/findByIngredients?ingredients=${ingredientsParam}&ranking=1&ignorePantry=true&apiKey=${apiKey}`;
+
+    try {
+      setIsLoading(true);
+      setError("");
+
+      const res = await fetch(url);
+      if (!res.ok) throw new Error("Something went wrong with fetch result 🤪");
+
+      const data = await res.json();
+      if (data.Response === "False") throw new Error("Recipes not found 🥲");
+
+      setResults(data);
+    } catch (err) {
+      console.error(err.message);
+      setError(err.message);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleFetchResult = () => {
+    setShowResults(true);
+    fetchResults();
+  };
+
+  const handleAddRecipe = (newItem) => {
+    setRecipes((preRecipes) => {
+      const isExisting = preRecipes.find((recipe) => recipe.id === newItem.id);
+      return !isExisting ? [...preRecipes, newItem] : preRecipes;
+    });
+  };
+
+  // const handleOpenLearnMore = (id) => {
+  //   setLearnMore(id);
+  // };
+
+  // const handleCloseLearnMore = () => {
+  //   setLearnMore(null);
+  // };
 
   return (
     <div className="App">
@@ -179,14 +174,25 @@ function App() {
           {!showResults ? (
             <>
               <MiddleBox />
-              <RightBox recipes={recipes} onDelete={handleDeleteOneRecipe} />
+              <RightBox
+                recipes={recipes}
+                onDelete={handleDeleteOneRecipe}
+                // onOpen
+              />
             </>
           ) : (
-            <ResultBox />
+            <ResultBox
+              results={results}
+              recipesIds={recipesIds}
+              isLoading={isLoading}
+              error={error}
+              onAdd={handleAddRecipe}
+              // onOpen
+            />
           )}
         </>
       ) : (
-        <LearnMore />
+        <LearnMore learnMore={learnMore} />
       )}
     </div>
   );

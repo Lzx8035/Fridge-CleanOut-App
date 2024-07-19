@@ -8,7 +8,9 @@ import Typography from "@mui/material/Typography";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import Button from "@mui/material/Button";
 
-export default function ResultItem({ item }) {
+export default function ResultItem({ item, onAdd, recipesIds }) {
+  const isLiked = recipesIds.find((recipeId) => item.id === recipeId);
+
   return (
     <Card sx={{ maxWidth: 345 }}>
       <CardMedia
@@ -28,8 +30,14 @@ export default function ResultItem({ item }) {
       </CardContent>
 
       <CardActions disableSpacing>
-        <IconButton aria-label="add to favorites">
-          <FavoriteIcon sx={{ fontSize: "3rem" }} />
+        <IconButton aria-label="add to favorites" onClick={() => onAdd(item)}>
+          <FavoriteIcon
+            sx={{
+              fontSize: "3rem",
+              color: `${isLiked ? "#faa2c1" : "#999"}`,
+              disabled: isLiked ? true : false,
+            }}
+          />
         </IconButton>
         <Button size="large">Learn More</Button>
       </CardActions>
