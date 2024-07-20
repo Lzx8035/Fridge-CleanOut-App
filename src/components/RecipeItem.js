@@ -4,6 +4,7 @@ import ListItemAvatar from "@mui/material/ListItemAvatar";
 import Divider from "@mui/material/Divider";
 import DeleteIcon from "@mui/icons-material/Delete";
 import IconButton from "@mui/material/IconButton";
+import { Button, Stack } from "@mui/material";
 
 export default function RecipeItem({ item, onDelete }) {
   return (
@@ -15,9 +16,13 @@ export default function RecipeItem({ item, onDelete }) {
           gap: 2,
         }}
       >
-        <ListItemAvatar>
-          <img alt={item.title} src={item.image} style={{ height: "6rem" }} />
-        </ListItemAvatar>
+        <Stack>
+          <ListItemAvatar>
+            <img alt={item.title} src={item.image} style={{ height: "6rem" }} />
+          </ListItemAvatar>
+          <Button size="middle">Learn More</Button>
+        </Stack>
+
         <ListItemText
           primary={item.title}
           secondary={`Missed ingredients count: ${item.missedIngredientCount},
@@ -25,6 +30,7 @@ export default function RecipeItem({ item, onDelete }) {
           primaryTypographyProps={{ fontWeight: "bold" }}
           secondaryTypographyProps={{ color: "text.secondary" }}
         />
+
         <IconButton onClick={() => onDelete(item.id)}>
           <DeleteIcon sx={{ color: "#bbb", fontSize: "2rem" }} />
         </IconButton>

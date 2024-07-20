@@ -13,7 +13,7 @@ import LearnMore from "./LearnMore";
 import useLocalStorageStage from "./useLocalStorage";
 
 // TODO
-// add LearnMore page and complete fetch details for LearnMore
+// add LearnMore page and complete fetch function for LearnMore
 // add router for LearnMore Page
 
 const InitialIngredients = [
@@ -130,6 +130,10 @@ function App() {
 
       const data = await res.json();
       if (data.Response === "False") throw new Error("Recipes not found 🥲");
+      if (data.length === 0) {
+        setPage((page) => page - 1);
+        alert("It is the last page 🥲");
+      }
 
       setResults(data);
     } catch (err) {
@@ -142,6 +146,7 @@ function App() {
 
   const handleFetchResult = () => {
     setShowResults(true);
+    setPage(1);
     fetchResults();
   };
 

@@ -1,9 +1,6 @@
-import { Grid, Stack } from "@mui/material";
+import { Grid } from "@mui/material";
 import ResultItem from "./ResultItem";
 import CustomButton from "./CustomButton";
-import { useState } from "react";
-
-// TODO: change the grid style
 
 export default function ResultBox({
   results,
@@ -41,7 +38,7 @@ export default function ResultBox({
               <ResultItem item={item} onAdd={onAdd} recipesIds={recipesIds} />
             </Grid>
           ))}
-          <Pagination page={page} onSetPage={onSetPage} />
+          <Pagination page={page} onSetPage={onSetPage} error={error} />
         </Grid>
       )}
     </div>
@@ -71,7 +68,6 @@ const Pagination = ({ page, onSetPage, error }) => {
   };
   const handleNextPage = () => {
     onSetPage((page) => page + 1);
-    if (error) onSetPage((page) => page - 1);
   };
 
   return (
