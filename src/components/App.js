@@ -13,49 +13,14 @@ import LearnMore from "./LearnMore";
 import useLocalStorageStage from "./useLocalStorage";
 
 // TODO
-// add LearnMore page and complete fetch function for LearnMore
+// complete fetch function and LearnMore Page
 // add router for LearnMore Page
-
-const InitialIngredients = [
-  { id: 1001, name: "potato", quantity: "100g", emoji: "🥔" },
-  { id: 1022, name: "garlic", quantity: "5", emoji: "🧄" },
-  { id: 1333, name: "tomato", quantity: "2", emoji: "🍅" },
-  { id: 1444, name: "tofu", quantity: "500g", emoji: "" },
-  { id: 1555, name: "salmon", quantity: "500g", emoji: "🍣" },
-  //   // { id: 1666, name: "pork", quantity: "4lb" },
-  //   // { id: 1777, name: "chicken", quantity: "1kg" },
-  //   // { id: 1888, name: "beef", quantity: "5lb" },
-  //   // { id: 1999, name: "carrot", quantity: "500g" },
-  //   // { id: 2000, name: "onion", quantity: "4" },
-  //   // { id: 2111, name: "bell pepper", quantity: "10" },
-  //   // { id: 2222, name: "mushroom", quantity: "20" },
-];
-
-///////// Create LearnMore Page
-// async function createRecipeCard(id) {
-//   const url = `https://api.spoonacular.com/recipes/${id}/card?apiKey=${apiKey}`;
-
-//   try {
-//     const response = await fetch(url);
-//     if (!response.ok) {
-//       throw new Error(`HTTP error! status: ${response.status}`);
-//     }
-//     const data = await response.json();
-//     console.log(data);
-//   } catch (error) {
-//     console.error("Error fetching recipes:", error);
-//   }
-// }
-// // createRecipeCard(id);
 
 ////////////////////////////////////////////////////////////////////////
 function App() {
   const [showResults, setShowResults] = useState(false);
-  const [learnMore, setLearnMore] = useState(null); // recipe id
-  const [ingredients, setIngredients] = useLocalStorageStage(
-    InitialIngredients,
-    "ingredients"
-  );
+  const [learnMore, setLearnMore] = useState(null); // item !!!
+  const [ingredients, setIngredients] = useLocalStorageStage([], "ingredients");
   const [recipes, setRecipes] = useLocalStorageStage([], "recipes");
   const recipesIds = recipes.map((item) => item.id);
 
@@ -110,7 +75,7 @@ function App() {
     }, 300);
   };
 
-  const fetchResults = async (page = 1) => {
+  async function fetchResults(page = 1) {
     if (ingredients.length === 0) {
       setError("");
       setResults([]);
@@ -142,7 +107,7 @@ function App() {
     } finally {
       setIsLoading(false);
     }
-  };
+  }
 
   const handleFetchResult = () => {
     setShowResults(true);
@@ -161,13 +126,30 @@ function App() {
     fetchResults(page);
   }, [page]);
 
-  // const handleOpenLearnMore = (id) => {
-  //   setLearnMore(id);
-  // };
+  // async function fetchMoreDetail(id = "73420") {
+  //   const url = `https://api.spoonacular.com/recipes/${id}/card?apiKey=${apiKey}&mask=heartMask`;
 
-  // const handleCloseLearnMore = () => {
-  //   setLearnMore(null);
-  // };
+  //   try {
+  //     const response = await fetch(url);
+  //     if (!response.ok) {
+  //       throw new Error(`HTTP error! status: ${response.status}`);
+  //     }
+  //     const data = await response.json();
+  //     console.log("why");
+  //     console.log(data);
+  //   } catch (error) {
+  //     console.error("Error fetching recipes:", error);
+  //   }
+  // }
+
+  const handleOpenLearnMore = (item) => {
+    setLearnMore(() => item);
+    // fetchMoreDetail(id);
+  };
+
+  const handleCloseLearnMore = () => {
+    setLearnMore(null);
+  };
 
   return (
     <div className="App">
@@ -188,7 +170,7 @@ function App() {
               <RightBox
                 recipes={recipes}
                 onDelete={handleDeleteOneRecipe}
-                // onOpen
+                onOpen={handleOpenLearnMore}
               />
             </>
           ) : (
@@ -200,12 +182,17 @@ function App() {
               onAdd={handleAddRecipe}
               page={page}
               onSetPage={setPage}
-              // onOpen
+              onOpen={handleOpenLearnMore}
             />
           )}
         </>
       ) : (
-        <LearnMore learnMore={learnMore} />
+        <LearnMore
+          learnMore={learnMore}
+          onClose={handleCloseLearnMore}
+          recipesIds={recipesIds}
+          onAdd={handleAddRecipe}
+        />
       )}
     </div>
   );

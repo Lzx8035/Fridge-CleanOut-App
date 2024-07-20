@@ -8,7 +8,7 @@ import Typography from "@mui/material/Typography";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import Button from "@mui/material/Button";
 
-export default function ResultItem({ item, onAdd, recipesIds }) {
+export default function ResultItem({ item, onAdd, recipesIds, onOpen }) {
   const isLiked = recipesIds.find((recipeId) => item.id === recipeId);
 
   return (
@@ -39,7 +39,9 @@ export default function ResultItem({ item, onAdd, recipesIds }) {
             }}
           />
         </IconButton>
-        <Button size="large">Learn More</Button>
+        <Button size="large" onClick={() => onOpen(item)}>
+          Learn More
+        </Button>
       </CardActions>
     </Card>
   );

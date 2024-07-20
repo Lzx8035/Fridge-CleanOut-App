@@ -10,6 +10,7 @@ export default function ResultBox({
   onAdd,
   page,
   onSetPage,
+  onClose,
 }) {
   return (
     <div className="recipes-result-box">
@@ -35,7 +36,12 @@ export default function ResultBox({
               key={item.id}
               style={{ maxHeight: "37rem", minHeight: "37rem" }}
             >
-              <ResultItem item={item} onAdd={onAdd} recipesIds={recipesIds} />
+              <ResultItem
+                item={item}
+                onAdd={onAdd}
+                recipesIds={recipesIds}
+                onClose={onClose}
+              />
             </Grid>
           ))}
           <Pagination page={page} onSetPage={onSetPage} error={error} />

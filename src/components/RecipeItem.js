@@ -6,7 +6,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import IconButton from "@mui/material/IconButton";
 import { Button, Stack } from "@mui/material";
 
-export default function RecipeItem({ item, onDelete }) {
+export default function RecipeItem({ item, onDelete, onOpen }) {
   return (
     <>
       <Divider />
@@ -20,7 +20,9 @@ export default function RecipeItem({ item, onDelete }) {
           <ListItemAvatar>
             <img alt={item.title} src={item.image} style={{ height: "6rem" }} />
           </ListItemAvatar>
-          <Button size="middle">Learn More</Button>
+          <Button size="middle" onClick={() => onOpen(item)}>
+            Learn More
+          </Button>
         </Stack>
 
         <ListItemText

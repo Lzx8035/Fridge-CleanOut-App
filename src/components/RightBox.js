@@ -1,7 +1,7 @@
 import List from "@mui/material/List";
 import RecipeItem from "./RecipeItem";
 
-export default function RightBox({ recipes, onDelete }) {
+export default function RightBox({ recipes, onDelete, onOpen }) {
   return (
     <div className="right-box">
       <h3 style={{ fontFamily: "Second", color: "#6eada8" }}>
@@ -17,7 +17,12 @@ export default function RightBox({ recipes, onDelete }) {
         }}
       >
         {recipes.map((item) => (
-          <RecipeItem key={item.id} item={item} onDelete={onDelete} />
+          <RecipeItem
+            key={item.id}
+            item={item}
+            onDelete={onDelete}
+            onOpen={onOpen}
+          />
         ))}
       </List>
     </div>
