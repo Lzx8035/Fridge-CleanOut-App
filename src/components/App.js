@@ -22,13 +22,13 @@ function App() {
   const [ingredients, setIngredients] = useLocalStorageStage([], "ingredients");
   const [recipes, setRecipes] = useLocalStorageStage([], "recipes");
   const recipesIds = recipes.map((item) => item.id);
+  const [detailImage, setDetailImage] = useState(null);
+  const [isLoadingDetail, setIsLoadingDetail] = useState(false);
 
   const [page, setPage] = useState(1);
   const [results, setResults] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
-
-  const apiKey = "bd8e5f0053c7473ebebedb215a6c2d9a";
 
   const handleCloseResult = () => {
     setShowResults(false);
@@ -81,10 +81,12 @@ function App() {
         setResults([]);
         return;
       }
+      const numberPerPage = 12;
+      const apiKey = "bd8e5f0053c7473ebebedb215a6c2d9a";
 
-      const offset = (page - 1) * 12;
+      const offset = (page - 1) * numberPerPage;
       const ingredientsParam = ingredients.map((item) => item.name).join(",+");
-      const url = `https://api.spoonacular.com/recipes/findByIngredients?ingredients=${ingredientsParam}&ranking=1&ignorePantry=true&apiKey=${apiKey}&number=12&offset=${offset}`;
+      const url = `https://api.spoonacular.com/recipes/findByIngredients?ingredients=${ingredientsParam}&ranking=1&ignorePantry=true&apiKey=${apiKey}&number=${numberPerPage}&offset=${offset}`;
 
       try {
         setIsLoading(true);
@@ -109,7 +111,7 @@ function App() {
         setIsLoading(false);
       }
     },
-    [ingredients, apiKey]
+    [ingredients]
   );
 
   const handleFetchResult = () => {
@@ -129,25 +131,29 @@ function App() {
     fetchResults(page);
   }, [fetchResults, page]);
 
-  // async function fetchMoreDetail(id = "73420") {
-  //   const url = `https://api.spoonacular.com/recipes/${id}/card?apiKey=${apiKey}&mask=heartMask`;
+  async function fetchMoreDetail(id) {
+    const apiKey = "c1e1dd49201c4cdf9de364c150494c25";
+    const url = `https://api.spoonacular.com/recipes/${id}/card?apiKey=${apiKey}&mask=heartMask`;
 
-  //   try {
-  //     const response = await fetch(url);
-  //     if (!response.ok) {
-  //       throw new Error(`HTTP error! status: ${response.status}`);
-  //     }
-  //     const data = await response.json();
-  //     console.log("why");
-  //     console.log(data);
-  //   } catch (error) {
-  //     console.error("Error fetching recipes:", error);
-  //   }
-  // }
+    try {
+      setIsLoadingDetail(true);
+      const response = await fetch(url);
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const data = await response.json();
+      setDetailImage(data.url);
+    } catch (error) {
+      console.error("Error fetching recipes:", error);
+      setDetailImage(null);
+    } finally {
+      setIsLoadingDetail(false);
+    }
+  }
 
   const handleOpenLearnMore = (item) => {
     setLearnMore(() => item);
-    // fetchMoreDetail(id);
+    fetchMoreDetail(item.id);
   };
 
   const handleCloseLearnMore = () => {
@@ -195,6 +201,8 @@ function App() {
           onClose={handleCloseLearnMore}
           recipesIds={recipesIds}
           onAdd={handleAddRecipe}
+          detailImage={detailImage}
+          isLoadingDetail={isLoadingDetail}
         />
       )}
     </div>
