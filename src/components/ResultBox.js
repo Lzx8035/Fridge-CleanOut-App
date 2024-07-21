@@ -10,7 +10,7 @@ export default function ResultBox({
   onAdd,
   page,
   onSetPage,
-  onClose,
+  onOpen,
 }) {
   return (
     <div className="recipes-result-box">
@@ -40,7 +40,7 @@ export default function ResultBox({
                 item={item}
                 onAdd={onAdd}
                 recipesIds={recipesIds}
-                onClose={onClose}
+                onOpen={onOpen}
               />
             </Grid>
           ))}

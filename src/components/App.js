@@ -1,5 +1,4 @@
-import React, { useEffect } from "react";
-import { useState } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 
 import Stack from "@mui/material/Stack";
 import IconButton from "@mui/material/IconButton";
@@ -75,39 +74,43 @@ function App() {
     }, 300);
   };
 
-  async function fetchResults(page = 1) {
-    if (ingredients.length === 0) {
-      setError("");
-      setResults([]);
-      return;
-    }
-
-    const offset = (page - 1) * 12;
-    const ingredientsParam = ingredients.map((item) => item.name).join(",+");
-    const url = `https://api.spoonacular.com/recipes/findByIngredients?ingredients=${ingredientsParam}&ranking=1&ignorePantry=true&apiKey=${apiKey}&number=12&offset=${offset}`;
-
-    try {
-      setIsLoading(true);
-      setError("");
-
-      const res = await fetch(url);
-      if (!res.ok) throw new Error("Something went wrong with fetch result 🤪");
-
-      const data = await res.json();
-      if (data.Response === "False") throw new Error("Recipes not found 🥲");
-      if (data.length === 0) {
-        setPage((page) => page - 1);
-        alert("It is the last page 🥲");
+  const fetchResults = useCallback(
+    async (page = 1) => {
+      if (ingredients.length === 0) {
+        setError("");
+        setResults([]);
+        return;
       }
 
-      setResults(data);
-    } catch (err) {
-      console.error(err.message);
-      setError(err.message);
-    } finally {
-      setIsLoading(false);
-    }
-  }
+      const offset = (page - 1) * 12;
+      const ingredientsParam = ingredients.map((item) => item.name).join(",+");
+      const url = `https://api.spoonacular.com/recipes/findByIngredients?ingredients=${ingredientsParam}&ranking=1&ignorePantry=true&apiKey=${apiKey}&number=12&offset=${offset}`;
+
+      try {
+        setIsLoading(true);
+        setError("");
+
+        const res = await fetch(url);
+        if (!res.ok)
+          throw new Error("Something went wrong with fetch result 🤪");
+
+        const data = await res.json();
+        if (data.Response === "False") throw new Error("Recipes not found 🥲");
+        if (data.length === 0) {
+          setPage((page) => page - 1);
+          alert("It is the last page 🥲");
+        }
+
+        setResults(data);
+      } catch (err) {
+        console.error(err.message);
+        setError(err.message);
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [ingredients, apiKey]
+  );
 
   const handleFetchResult = () => {
     setShowResults(true);
@@ -124,7 +127,7 @@ function App() {
 
   useEffect(() => {
     fetchResults(page);
-  }, [page]);
+  }, [fetchResults, page]);
 
   // async function fetchMoreDetail(id = "73420") {
   //   const url = `https://api.spoonacular.com/recipes/${id}/card?apiKey=${apiKey}&mask=heartMask`;
